@@ -1,21 +1,22 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
-
 @SpringBootApplication
 public class CloudStorageApplication implements CommandLineRunner {
 
-	private UserMapper userMapper;
+//	private UserMapper userMapper;
 
-	public CloudStorageApplication(UserMapper userMapper) {
-		this.userMapper = userMapper;
-	}
+//	public CloudStorageApplication(UserMapper userMapper) {
+//		this.userMapper = userMapper;
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(CloudStorageApplication.class, args);
@@ -24,16 +25,16 @@ public class CloudStorageApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		System.out.println("run method");
-////		userMapper.addUser(new User("run", "run", "run", "run"));
-//		List<User> users = userMapper.findAllUsers();
-//
-//		for (User u: users) {
-//			String fn = u.getFirstname();
-//			System.out.println("--------");
-//			System.out.println("FN" + fn);
-//			System.out.println("--------");
-//		}
-//		System.out.println("user created");
+
+		devAutomation();
+	}
+
+	public void devAutomation(){
+		WebDriverManager.chromedriver().setup();
+		var driver = new ChromeDriver();
+		driver.get("http://localhost:8080/login");
+		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);
+		driver.findElement(By.id("inputPassword")).sendKeys("a" + Keys.ENTER);
+		driver.findElement(By.id("nav-notes-tab")).click();
 	}
 }

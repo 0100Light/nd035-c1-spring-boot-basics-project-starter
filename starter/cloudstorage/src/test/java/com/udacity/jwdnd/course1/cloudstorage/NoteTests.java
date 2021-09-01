@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CloudStorageApplicationTests {
+class NoteTests {
 
 	@LocalServerPort
 	private int port;
@@ -25,6 +25,7 @@ class CloudStorageApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		logIn();
 	}
 
 	@AfterEach
@@ -36,19 +37,16 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
-	public void getLoginPage() {
-		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
+	public void getNotes(){
+
 	}
 
-	@Test
-	public void devAuto() {
+	public void logIn() {
 		driver.get("http://localhost:8080/login");
 		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);
 		driver.findElement(By.id("inputPassword")).sendKeys("a" + Keys.ENTER);
 		driver.findElement(By.id("nav-notes-tab")).click();
 	}
-
 
 	public void keepTestRunning(){
 		// keep the test running

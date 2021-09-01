@@ -29,6 +29,8 @@ public class AuthService implements AuthenticationProvider {
         Object pass = authentication.getCredentials();
 
         // TODO: implement hashing
+        // TODO: validate user reg, e.g. duplication of username
+
 
         User db_user = userService.getUser(name);
         if (db_user != null && pass != null) {
