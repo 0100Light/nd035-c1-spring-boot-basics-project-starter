@@ -2,6 +2,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteA;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,8 @@ public class HomeController {
 
     @GetMapping()
     public String Homepage(Model model){
-//        List<Note> notes = noteMapper.getNotes();
-//        model.addAttribute("notes", notes);
+        List<NoteA> notes = noteMapper.getNotes();
+        model.addAttribute("notes", notes);
         return "home";
     }
 
@@ -32,6 +33,13 @@ public class HomeController {
 
 
         int noteSize = noteMapper.countNotes();
+        return "redirect:/home#nav-notes";
+    }
+
+    @GetMapping("/delete_note")
+    public String delNote(@RequestParam String noteId){
+        int noteid = Integer.parseInt(noteId);
+        noteMapper.deleteNote(noteid);
         return "redirect:/home#nav-notes";
     }
 }
