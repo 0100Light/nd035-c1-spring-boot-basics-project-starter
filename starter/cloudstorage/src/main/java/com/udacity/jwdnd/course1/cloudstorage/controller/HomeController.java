@@ -42,4 +42,23 @@ public class HomeController {
         noteMapper.deleteNote(noteid);
         return "redirect:/home#nav-notes";
     }
+
+    @GetMapping("/edit_note")
+    public String editNote(@RequestParam String noteId, Model model){
+        NoteA note = noteMapper.getNote(noteId);
+        model.addAttribute("note", note);
+        return "edit_note";
+    }
+
+    @PostMapping("/update_note")
+    public String updateNote(
+            @RequestParam("newNoteTitle")String title,
+            @RequestParam("newNoteDescription")String desc,
+            @RequestParam("userId")String userId,
+            @RequestParam("noteId")String noteId,
+            Model model)
+    {
+        noteMapper.updateNote(new NoteA(Integer.parseInt(noteId), title, desc, Integer.parseInt(userId)));
+        return "redirect:/home#nav-notes";
+    }
 }

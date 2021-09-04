@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Note</title>
+</head>
+<body>
+<form th:action="@{/home/update_note}" action="#" method="post" th:object="${note}">
+    <textarea th:text="${note.getNotetitle()}" name="newNoteTitle"></textarea>
+    <br>
+    <textarea th:text="${note.getNotedescription()}" name="newNoteDescription"></textarea>
+    <br>
+    <input type="hidden" name="userId" th:value="${note.getUserid()}">
+    <input type="hidden" name="noteId" th:value="${note.getNoteid()}">
+    <button type="submit">Update</button>
+</form>
+</body>
+</html>

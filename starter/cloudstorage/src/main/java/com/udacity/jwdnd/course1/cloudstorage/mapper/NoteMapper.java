@@ -18,9 +18,12 @@ public interface NoteMapper {
 //    public List<Note> getNotes();
     // TODO: mapping problems
 
+    @Select("select * from NOTES where noteid = #{noteId}")
+    public NoteA getNote(String noteId);
+
 
     // title, desc, userid
-    @Insert("insert into NOTES (notetitle, notedescription, userid) values (#{title}, #{description}, #{userId})")
+    @Insert("insert into NOTES (notetitle, notedescription, userid) values ('#{title}', '#{description}', #{userId})")
 //    @Options(useGeneratedKeys = true, keyProperty = "noteid")
     public int addNote(Note note);
 
@@ -30,4 +33,6 @@ public interface NoteMapper {
     @Delete("delete from NOTES where noteid = ${noteid}")
     public int deleteNote(int noteId);
 
+    @Update("update NOTES set notetitle='${notetitle}', notedescription='${notedescription}' where noteid=${noteid}")
+    public void updateNote(NoteA note);
 }
