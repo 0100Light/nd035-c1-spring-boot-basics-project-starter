@@ -23,6 +23,6 @@ public interface CredMapper {
     @Delete("delete from CREDENTIALS where credentialid = ${credid}")
     public int delCred(int credId);
 
-    @Update("update CREDENTIALS set '' where CREDENTIALID = ${credentialid}")
-    public Cred updateCred(Cred cred);
+    @Update("update CREDENTIALS set url='${url}', username='${username}', password='${password}' where CREDENTIALID = ${credentialid}")
+    public int updateCred(Cred cred);
 }
