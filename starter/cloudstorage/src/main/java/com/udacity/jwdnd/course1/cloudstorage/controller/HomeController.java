@@ -1,27 +1,36 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.mapper.CredMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
+import com.udacity.jwdnd.course1.cloudstorage.model.Cred;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteA;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController {
     private NoteMapper noteMapper;
+    private CredMapper credMapper;
 
-    public HomeController(NoteMapper noteMapper) {
+    public HomeController(NoteMapper noteMapper, CredMapper credMapper) {
         this.noteMapper = noteMapper;
+        this.credMapper = credMapper;
     }
 
     @GetMapping()
-    public String Homepage(Model model){
+    public String Homepage(Principal principal, Model model){
         List<NoteA> notes = noteMapper.getNotes();
+        List<Cred> creds = credMapper.creds();
         model.addAttribute("notes", notes);
+        model.addAttribute("creds", creds);
+
+        model.addAttribute("login_user_name", principal.getName());
         return "home";
     }
 

@@ -30,7 +30,7 @@ public interface NoteMapper {
     @Select("select count(*) from NOTES")
     public int countNotes();
 
-    @Delete("delete from NOTES where noteid = ${noteid}")
+    @Delete("delete from NOTES where noteid = ${noteId}")
     public int deleteNote(int noteId);
 
     @Update("update NOTES set notetitle='${notetitle}', notedescription='${notedescription}' where noteid=${noteid}")

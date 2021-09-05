@@ -33,8 +33,8 @@ public class CloudStorageApplication implements CommandLineRunner {
 		WebDriverManager.chromedriver().setup();
 		var driver = new ChromeDriver();
 		driver.get("http://localhost:8080/login");
-		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);
-		driver.findElement(By.id("inputPassword")).sendKeys("a" + Keys.ENTER);
-		driver.findElement(By.id("nav-notes-tab")).click();
+		driver.findElement(By.id("inputUsername")).sendKeys("o" + Keys.TAB);
+		driver.findElement(By.id("inputPassword")).sendKeys("o" + Keys.ENTER);
+//		driver.findElement(By.id("nav-notes-tab")).click();
 	}
 }

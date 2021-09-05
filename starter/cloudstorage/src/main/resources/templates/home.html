@@ -10,6 +10,7 @@
     </head>
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
+            <p class="">Username: <span th:text="${login_user_name}"></span></p>
             <div id="logoutDiv">
                 <form action="#" method="POST">
                     <button type="submit" class="btn btn-secondary float-right">Logout</button>
@@ -134,14 +135,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="s: ${creds}">
                                     <td>
                                         <button type="button" class="btn btn-success">Edit</button>
                                         <a class="btn btn-danger">Delete</a>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <th scope="row" th:text="${s.getUrl()}">Example Credential URL</th>
+                                    <td th:text="${s.getUsername()}">Example Credential Username</td>
+                                    <td th:text="${s.getPassword()}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
