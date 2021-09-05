@@ -27,9 +27,10 @@ public class SignupController {
 
     @PostMapping()
     public String HandleSignupPost(@ModelAttribute("signupform") SignupForm signupform, Model model){
-        User u = new User(signupform.getFirstname(), signupform.getLastname(), signupform.getUsername(), signupform.getPassword());
-        System.out.println(signupform.getFirstname()+ signupform.getLastname()+ signupform.getUsername()+ signupform.getPassword());
-        userService.addUser(new User(signupform.getFirstname(), signupform.getLastname(), signupform.getUsername(), signupform.getPassword()));
+//        User u = new User(signupform.getFirstname(), signupform.getLastname(), signupform.getUsername(), signupform.getPassword());
+//        System.out.println(signupform.getFirstname()+ signupform.getLastname()+ signupform.getUsername()+ signupform.getPassword());
+        int res = userService.addUserHashed(signupform);
+        //TODO: show msg if user already exists
         return "redirect:/login";
     }
 }

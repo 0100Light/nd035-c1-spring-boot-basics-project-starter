@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-    @Select("SELECT * FROM USERS LIMIT 5")
+    @Select("SELECT * FROM USERS LIMIT 50")
     public List<User> findAllUsers();
 
     @Select("SELECT * FROM USERS WHERE username = #{username}")
@@ -21,4 +21,9 @@ public interface UserMapper {
     @Insert("insert into users (username, password) values (#{username}, #{password})")
     @Options(useGeneratedKeys = true, keyProperty = "userid")
     public int addUser(User user);
+
+
+    @Insert("insert into USERS (username, salt, password, firstname, lastname) values ('${username}', '${salt}', '${password}', '${firstname}', '${lastname}' )")
+    @Options(useGeneratedKeys = true, keyProperty = "userid")
+    public int addUserHashed(User user);
 }

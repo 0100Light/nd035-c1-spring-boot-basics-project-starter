@@ -17,10 +17,12 @@ import java.util.List;
 public class AuthService implements AuthenticationProvider {
 
     private UserService userService;
+    private HashService hashService;
     private Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-    public AuthService(UserService userService) {
+    public AuthService(UserService userService, HashService hashService) {
         this.userService = userService;
+        this.hashService = hashService;
     }
 
     @Override
@@ -29,25 +31,26 @@ public class AuthService implements AuthenticationProvider {
         Object pass = authentication.getCredentials();
 
         // TODO: implement hashing
-        // TODO: validate user reg, e.g. duplication of username
 
 
         User db_user = userService.getUser(name);
         if (db_user != null && pass != null) {
             String db_pass = db_user.getPassword();
-            String pass_string = pass.toString();
+            String pass_string = hashService.getHashedValue(pass.toString(), db_user.getSalt());
             if (pass_string.equals(db_pass)){
                 System.out.println("login success");
-                return new UsernamePasswordAuthenticationToken(name, pass_string, new ArrayList<>());
+                logger.warn("login success");
+                return new UsernamePasswordAuthenticationToken(name, db_pass, new ArrayList<>());
                 // last param: grantedAuthorities is VERY IMPORTANT, 沒提供相當於沒有任何權限…
             }
         }
-        System.out.println("-------------");
-        System.out.println("NAME: " + name);
-        System.out.println("pass: " + name);
-        System.out.println("-------------");
+//        System.out.println("-------------");
+//        System.out.println("NAME: " + name);
+//        System.out.println("pass: " + name);
+//        System.out.println("-------------");
 
         System.out.println("login failed");
+        logger.warn("login failed");
         return null;
     }
 

@@ -1,6 +1,4 @@
-INSERT INTO USERS (USERNAME, SALT, PASSWORD, FIRSTNAME, LASTNAME) VALUES ( 'a', 'a', 'a', 'a', 'a' );
-
-INSERT INTO USERS (USERNAME, PASSWORD) VALUES ('b', 'b');
+INSERT INTO USERS (USERNAME, SALT, PASSWORD, FIRSTNAME, LASTNAME) VALUES ( 'p', 'shTN61OkXMfmZc1N', 'fJsnt7gXgPcVkikFPaxbPQ', 'ping', 'pong' );
 
 insert into NOTES (notetitle, notedescription, userid) VALUES ( 'a note', 'this is the description', 1 );
 insert into NOTES (notetitle, notedescription, userid) VALUES ( '1 note', 'opafgsjdhopasdgijagjopsi', 1 );

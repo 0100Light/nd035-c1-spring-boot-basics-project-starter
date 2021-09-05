@@ -26,7 +26,7 @@ public class CloudStorageApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		devAutomation();
+//		devAutomation();
 	}
 
 	public void devAutomation(){
