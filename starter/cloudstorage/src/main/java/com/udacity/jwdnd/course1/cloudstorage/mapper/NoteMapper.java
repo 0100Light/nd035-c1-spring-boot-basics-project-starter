@@ -8,8 +8,8 @@ import java.util.List;
 
 @Mapper
 public interface NoteMapper {
-    @Select("select * from NOTES LIMIT 100")
-    public List<NoteA> getNotes();
+    @Select("select * from NOTES where userid=${userId} LIMIT 100")
+    public List<NoteA> getNotes(int UserId);
 //    @Results({
 //            @Result(property = "title", column = "notetitle"),
 //            @Result(property = "description", column = "notedescription"),
@@ -19,7 +19,7 @@ public interface NoteMapper {
     // TODO: mapping problems
 
     @Select("select * from NOTES where noteid = #{noteId}")
-    public NoteA getNote(String noteId);
+    public NoteA getNote(int noteId);
 
 
     // title, desc, userid

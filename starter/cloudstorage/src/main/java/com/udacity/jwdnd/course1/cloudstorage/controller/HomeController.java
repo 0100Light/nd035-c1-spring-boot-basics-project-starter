@@ -5,6 +5,8 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Cred;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteA;
+import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +19,18 @@ import java.util.List;
 public class HomeController {
     private NoteMapper noteMapper;
     private CredMapper credMapper;
+    private UserService userService;
 
-    public HomeController(NoteMapper noteMapper, CredMapper credMapper) {
+    public HomeController(NoteMapper noteMapper, CredMapper credMapper, UserService userService) {
         this.noteMapper = noteMapper;
         this.credMapper = credMapper;
+        this.userService = userService;
     }
 
     @GetMapping()
-    public String Homepage(Principal principal, Model model){
-        List<NoteA> notes = noteMapper.getNotes();
+    public String homePage(Principal principal, Model model){
+        int userId = getUserData(principal).getUserid();
+        List<NoteA> notes = noteMapper.getNotes(userId);
         List<Cred> creds = credMapper.creds();
         model.addAttribute("notes", notes);
         model.addAttribute("creds", creds);
@@ -35,10 +40,11 @@ public class HomeController {
     }
 
     @PostMapping()
-    public String postNotes(@RequestParam String noteTitle, @RequestParam String noteDescription, Model model){
+    public String postNotes(@RequestParam String noteTitle, @RequestParam String noteDescription, Model model, Principal principal){
         String title = noteTitle;
         String desc = noteDescription;
-        noteMapper.addNote(new Note(title, desc, 1));
+        int userId = getUserData(principal).getUserid();
+        noteMapper.addNote(new Note(title, desc, userId));
 
 
         int noteSize = noteMapper.countNotes();
@@ -54,7 +60,8 @@ public class HomeController {
 
     @GetMapping("/edit_note")
     public String editNote(@RequestParam String noteId, Model model){
-        NoteA note = noteMapper.getNote(noteId);
+
+        NoteA note = noteMapper.getNote(Integer.parseInt(noteId));
         model.addAttribute("note", note);
         return "edit_note";
     }
@@ -68,6 +75,10 @@ public class HomeController {
             Model model)
     {
         noteMapper.updateNote(new NoteA(Integer.parseInt(noteId), title, desc, Integer.parseInt(userId)));
-        return "redirect:/home#nav-notes";
+        return "redirect:/home/edit_note?noteId=" + noteId;
+    }
+
+    public User getUserData(Principal principal){
+        return userService.getUser(principal.getName());
     }
 }
