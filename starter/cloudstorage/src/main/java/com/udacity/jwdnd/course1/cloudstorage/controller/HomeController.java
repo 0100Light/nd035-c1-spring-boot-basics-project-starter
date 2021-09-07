@@ -53,7 +53,7 @@ public class HomeController {
         String title = noteTitle;
         String desc = noteDescription;
         int userId = getUserData(principal).getUserid();
-        noteMapper.addNote(new Note(title, desc, userId));
+        noteMapper.addNote(new NoteA(noteTitle, noteDescription, userId));
 
 
         int noteSize = noteMapper.countNotes();

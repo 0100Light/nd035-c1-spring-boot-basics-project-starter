@@ -15,10 +15,9 @@ public interface NoteMapper {
     public NoteA getNote(int noteId);
 
 
-    // title, desc, userid
-    @Insert("insert into NOTES (notetitle, notedescription, userid) values ('#{title}', '#{description}', #{userId})")
-//    @Options(useGeneratedKeys = true, keyProperty = "noteid")
-    public int addNote(Note note);
+    @Insert("insert into NOTES (notetitle, notedescription, userid) values (#{notetitle}, #{notedescription}, #{userid})")
+    @Options(useGeneratedKeys = true, keyProperty = "noteid")
+    public int addNote(NoteA note);
 
     @Select("select count(*) from NOTES")
     public int countNotes();
