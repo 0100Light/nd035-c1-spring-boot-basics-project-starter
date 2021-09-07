@@ -12,7 +12,9 @@ public interface FileMapper {
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     public int addFile(UploadFile file);
 
-    @Select("select * form FILES where userid = ${userId} limit 50")
+    // 這邊在propagate的方式是用constructor，如果要取所有欄位的話一定也要有一個完整的constructor
+    // 不然會出現 exception: org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "txt"
+    @Select("select * from FILES where userid = ${userId} limit 50")
     public List<UploadFile> getFiles(int userId);
 
     @Select("select * from FILES where fileId = ${fileId} limit 1")

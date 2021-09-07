@@ -16,6 +16,15 @@ public class UploadFile {
         this.filelocation = filelocation;
     }
 
+    public UploadFile(int fileId, String filename, String contenttype, long filesize, int userid, String filelocation) {
+        this.fileId = fileId;
+        this.filename = filename;
+        this.contenttype = contenttype;
+        this.filesize = filesize;
+        this.userid = userid;
+        this.filelocation = filelocation;
+    }
+
     public int getFileId() {
         return fileId;
     }

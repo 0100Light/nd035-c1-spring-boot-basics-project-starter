@@ -38,9 +38,11 @@ public class HomeController {
     public String homePage(Principal principal, Model model){
         int userId = getUserData(principal).getUserid();
         List<NoteA> notes = noteMapper.getNotes(userId);
-        List<Cred> creds = credMapper.creds();
+        List<Cred> creds = credMapper.creds(); // TODO: get with userId
+        List<UploadFile> files = fileMapper.getFiles(userId);
         model.addAttribute("notes", notes);
         model.addAttribute("creds", creds);
+        model.addAttribute("files", files);
 
         model.addAttribute("login_user_name", principal.getName());
         return "home";
@@ -113,8 +115,16 @@ public class HomeController {
     }
 
     @GetMapping("/file/delete")
-    public String delFile(){
-
+    public String delFile(@RequestParam int fileId){
+        // TODO: delete file on hard disk
+        UploadFile file = fileMapper.getFile(fileId);
+        Path filepath = Paths.get(file.getFilelocation());
+        try {
+            Files.deleteIfExists(filepath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fileMapper.delFile(fileId);
         return "redirect:/home";
     }
 
