@@ -30,9 +30,6 @@ public class AuthService implements AuthenticationProvider {
         String name = authentication.getName();
         Object pass = authentication.getCredentials();
 
-        // TODO: implement hashing
-
-
         User db_user = userService.getUser(name);
         if (db_user != null && pass != null) {
             String db_pass = db_user.getPassword();

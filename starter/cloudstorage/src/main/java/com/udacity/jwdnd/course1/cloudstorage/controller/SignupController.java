@@ -29,8 +29,13 @@ public class SignupController {
     public String HandleSignupPost(@ModelAttribute("signupform") SignupForm signupform, Model model){
 //        User u = new User(signupform.getFirstname(), signupform.getLastname(), signupform.getUsername(), signupform.getPassword());
 //        System.out.println(signupform.getFirstname()+ signupform.getLastname()+ signupform.getUsername()+ signupform.getPassword());
-        int res = userService.addUserHashed(signupform);
+
+        if (userService.getUser(signupform.getUsername()) == null){
+            int res = userService.addUserHashed(signupform);
+            return "redirect:/login";
+        }
+        System.out.println("user already exist");
+        return "redirect:/signup";
         //TODO: show msg if user already exists
-        return "redirect:/login";
     }
 }

@@ -1,27 +1,34 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredMapper;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
-import com.udacity.jwdnd.course1.cloudstorage.model.Cred;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
-import com.udacity.jwdnd.course1.cloudstorage.model.NoteA;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController {
+    private FileMapper fileMapper;
     private NoteMapper noteMapper;
     private CredMapper credMapper;
     private UserService userService;
 
-    public HomeController(NoteMapper noteMapper, CredMapper credMapper, UserService userService) {
+    public HomeController(FileMapper fileMapper, NoteMapper noteMapper, CredMapper credMapper, UserService userService) {
+        this.fileMapper = fileMapper;
         this.noteMapper = noteMapper;
         this.credMapper = credMapper;
         this.userService = userService;
@@ -76,6 +83,39 @@ public class HomeController {
     {
         noteMapper.updateNote(new NoteA(Integer.parseInt(noteId), title, desc, Integer.parseInt(userId)));
         return "redirect:/home/edit_note?noteId=" + noteId;
+    }
+
+    // File
+    @PostMapping("/file")
+    public String addFile(@RequestParam MultipartFile fileUpload, Model model, Principal principal) throws IOException {
+        if(fileUpload.isEmpty()) {
+            model.addAttribute("success",false);
+            model.addAttribute("message","No file selected to upload!");
+            return "redirect:/home";
+        }
+        String fn = fileUpload.getOriginalFilename();
+        Path uploadDir = Paths.get("./src/main/resources/upload");
+        Files.createDirectories(uploadDir);
+        Path uploadPath = Paths.get(String.valueOf(uploadDir), fn);
+        byte[] bytes = fileUpload.getBytes();
+        Files.write(uploadPath, bytes);
+
+        // TODO: write file info to DB
+        String fileExt = FilenameUtils.getExtension(fn);
+        long fileSize = Files.size(uploadPath);
+
+        User currentUser = userService.getUser(principal.getName()); // get user
+        fileMapper.addFile(new UploadFile(fn, fileExt, fileSize, currentUser.getUserid(), uploadPath.toString()));
+
+        model.addAttribute("success",true);
+        model.addAttribute("message","New File added successfully!");
+        return "redirect:/home";
+    }
+
+    @GetMapping("/file/delete")
+    public String delFile(){
+
+        return "redirect:/home";
     }
 
     public User getUserData(Principal principal){
