@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.concurrent.TimeUnit;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -25,6 +27,7 @@ class CloudStorageApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 	}
 
 	@AfterEach
@@ -88,13 +91,146 @@ class CloudStorageApplicationTests {
 
 	// 2. Write Tests for Note Creation, Viewing, Editing, and Deletion.
 	// Write a test that creates a note, and verifies it is displayed.
+	@Test
+	public void canCreateNote() throws InterruptedException {
+		signupAndLogin("X");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		driver.findElement(By.cssSelector("#nav-notes > button")).click();
+		driver.findElement(By.id("note-title")).sendKeys("ttttt" + Keys.TAB + "ddddd");
+		driver.findElement(By.cssSelector("#noteModal > div > div > div.modal-footer > button.btn.btn-primary")).click();
+		driver.findElement(By.id("nav-notes-tab")).click();
+
+		Thread.sleep(500);
+
+		Assertions.assertTrue(driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > th")).getText().contains("ttttt"));
+		Assertions.assertEquals("ddddd", driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > td:last-child")).getText());
+	}
+
+	public void createNote(String title, String description){
+
+		driver.findElement(By.id("nav-notes-tab")).click();
+		driver.findElement(By.cssSelector("#nav-notes > button")).click();
+		driver.findElement(By.id("note-title")).sendKeys(title + Keys.TAB + description);
+		driver.findElement(By.cssSelector("#noteModal > div > div > div.modal-footer > button.btn.btn-primary")).click();
+		driver.findElement(By.id("nav-notes-tab")).click();
+
+	}
 	// Write a test that edits an existing note and verifies that the changes are displayed.
+	@Test
+	public void canEditNote() throws InterruptedException {
+		signupAndLogin("asdkfjh");
+		createNote("nnnnn", "ddddd");
+
+
+//		driver.findElement(By.id("nav-notes-tab")).click();
+		Thread.sleep(200);
+		// edit button
+		driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > td:first-child > a.btn.btn-success")).click();
+
+		Thread.sleep(200);
+		driver.findElement(By.id("edit-note-title")).sendKeys("x" + Keys.TAB + "x");
+		driver.findElement(By.id("btn-edit-note-submit")).click();
+
+		Thread.sleep(200);
+		// get updated note text
+		String newTitle = driver.findElement(By.id("edit-note-title")).getText();
+		Assertions.assertEquals("nnnnnx", newTitle);
+		String newDescription = driver.findElement(By.id("edit-note-description")).getText();
+		Assertions.assertEquals("xddddd", newDescription);
+	}
 	// Write a test that deletes a note and verifies that the note is no longer displayed.
+	@Test
+	public void canDetele(){
+		signupAndLogin("x");
+		// to make cssSelector workable
+		createNote("xxx", "xxx");
+		createNote("tt", "dd");
+
+		driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > td:first-child > a.btn.btn-danger")).click();
+		driver.findElement(By.id("nav-notes-tab")).click();
+
+		Assertions.assertFalse(driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > th")).getText().contains("tt"));
+	}
 
 	// 3. Write Tests for Credential Creation, Viewing, Editing, and Deletion.
+	private void signupAndLoginToCredPage(){
+
+		signupAndLogin("xus");
+		clickCredTab();
+	}
+	private void clickCredTab(){
+		driver.findElement(By.id("nav-credentials-tab")).click();
+	}
 	// Write a test that creates a set of credentials, verifies that they are displayed, and verifies that the displayed password is encrypted.
+	@Test
+	public void canCreateCred() throws InterruptedException {
+		signupAndLoginToCredPage();
+		createCred("placeholder");
+		driver.findElement(By.id("btn-add-credential")).click();
+		driver.findElement(By.id("credential-url")).sendKeys("uu" + Keys.TAB + "ss" + Keys.TAB + "pp");
+		driver.findElement(By.id("btn-cred-submit")).click();
+		clickCredTab();
+		Thread.sleep(200);
+		String getTitle = driver.findElement(By.cssSelector("#credentialTable > tbody > tr:last-child> th")).getText();
+		Assertions.assertEquals("uu", getTitle);
+	}
+
+	private void createCred(String url){
+		getPage("/home");
+		clickCredTab();
+		driver.findElement(By.id("btn-add-credential")).click();
+		driver.findElement(By.id("credential-url")).sendKeys(url + Keys.TAB + "ss" + Keys.TAB + "pp");
+		driver.findElement(By.id("btn-cred-submit")).click();
+		clickCredTab();
+	}
 	// Write a test that views an existing set of credentials, verifies that the viewable password is unencrypted, edits the credentials, and verifies that the changes are displayed.
+	@Test
+	public void canDecryptAndUpdate() throws InterruptedException {
+		signupAndLoginToCredPage();
+		createCred("placeholder");
+		driver.findElement(By.id("btn-add-credential")).click();
+		driver.findElement(By.id("credential-url")).sendKeys("uu" + Keys.TAB + "ss" + Keys.TAB + "pp");
+		driver.findElement(By.id("btn-cred-submit")).click();
+
+		// click edit
+		getPage("/home");
+		clickCredTab();
+		Thread.sleep(200);
+		driver.findElement(By.cssSelector("#credentialTable > tbody > tr:last-child > td:nth-child(1) > a.btn.btn-success")).click();
+		// check if decrypted
+		String decPass = driver.findElement(By.id("edit-cred-password")).getAttribute("value");
+		Assertions.assertEquals("pp", decPass);
+
+		// check can update
+		driver.findElement(By.id("edit-cred-password")).clear();
+		driver.findElement(By.id("edit-cred-password")).sendKeys("newpass");
+		String newPass = driver.findElement(By.id("edit-cred-password")).getAttribute("value");
+		Assertions.assertEquals("newpass", newPass);
+	}
 	// Write a test that deletes an existing set of credentials and verifies that the credentials are no longer displayed.
+	@Test
+	public void canDeleteCred() throws InterruptedException {
+		signupAndLoginToCredPage();
+		createCred("cenDeleteCredTest");
+		clickCredTab();
+		createCred("2nd placeholder");
+		driver.findElement(By.id("btn-add-credential")).click();
+		driver.findElement(By.id("credential-url")).sendKeys("uu" + Keys.TAB + "ss" + Keys.TAB + "pp");
+		driver.findElement(By.id("btn-cred-submit")).click();
+
+		getPage("/home");
+		clickCredTab();
+		Thread.sleep(200);
+
+		// click delete
+		driver.findElement(By.cssSelector("#credentialTable > tbody > tr:last-child > td:nth-child(1) > a.btn.btn-danger")).click();
+
+		// #credentialTable > tbody > tr:nth-child(5) > td:nth-child(1) > a.btn.btn-danger
+		clickCredTab();
+		String lastUrl = driver.findElement(By.cssSelector("#credentialTable > tbody > tr:last-child > th")).getText();
+		Assertions.assertNotEquals("uu", lastUrl);
+
+	}
 
 	@Test
 	public void devAuto() {

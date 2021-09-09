@@ -6,13 +6,13 @@
 </head>
 <body>
 <form th:action="@{/home/update_note}" action="#" method="post" th:object="${note}">
-    <textarea th:text="${note.getNotetitle()}" name="newNoteTitle"></textarea>
+    <textarea id="edit-note-title" th:text="${note.getNotetitle()}" name="newNoteTitle"></textarea>
     <br>
-    <textarea th:text="${note.getNotedescription()}" name="newNoteDescription"></textarea>
+    <textarea id="edit-note-description" th:text="${note.getNotedescription()}" name="newNoteDescription"></textarea>
     <br>
     <input type="hidden" name="userId" th:value="${note.getUserid()}">
     <input type="hidden" name="noteId" th:value="${note.getNoteid()}">
-    <button type="submit">Update</button>
+    <button id="btn-edit-note-submit" type="submit">Update</button>
 </form>
 </body>
 </html>

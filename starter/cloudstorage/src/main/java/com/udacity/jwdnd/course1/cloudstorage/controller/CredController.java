@@ -70,4 +70,11 @@ public class CredController {
 //        return "redirect:/home#nav-credentials";
         return rdUrl;
     }
+
+    @GetMapping("/cred/delete")
+    public String delCred(@RequestParam String credId){
+
+        credMapper.delCred(Integer.parseInt(credId));
+        return "redirect:/home";
+    }
 }
