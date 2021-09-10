@@ -140,7 +140,7 @@ class CloudStorageApplicationTests {
 	}
 	// Write a test that deletes a note and verifies that the note is no longer displayed.
 	@Test
-	public void canDetele(){
+	public void canDeteleNote(){
 		signupAndLogin("x");
 		// to make cssSelector workable
 		createNote("xxx", "xxx");
