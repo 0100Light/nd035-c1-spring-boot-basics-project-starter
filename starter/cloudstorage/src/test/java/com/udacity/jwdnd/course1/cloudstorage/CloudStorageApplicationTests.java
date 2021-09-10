@@ -185,7 +185,7 @@ class CloudStorageApplicationTests {
 	}
 	// Write a test that views an existing set of credentials, verifies that the viewable password is unencrypted, edits the credentials, and verifies that the changes are displayed.
 	@Test
-	public void canDecryptAndUpdate() throws InterruptedException {
+	public void canDecryptAndUpdateCred() throws InterruptedException {
 		signupAndLoginToCredPage();
 		createCred("placeholder");
 		driver.findElement(By.id("btn-add-credential")).click();
@@ -232,7 +232,6 @@ class CloudStorageApplicationTests {
 
 	}
 
-	@Test
 	public void devAuto() {
 		driver.get("http://localhost:8080/login");
 		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);
