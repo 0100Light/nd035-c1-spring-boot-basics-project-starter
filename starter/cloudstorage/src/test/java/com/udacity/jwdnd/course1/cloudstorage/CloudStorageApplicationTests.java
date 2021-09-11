@@ -261,7 +261,7 @@ class CloudStorageApplicationTests {
 	public void canShowSignupSuccess() throws InterruptedException {
 		signUp("yyyy");
 
-		Thread.sleep(200);
+		Thread.sleep(500);
 		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
 		Assertions.assertTrue(formText.contains("successfully signed up"));
 	}
@@ -280,8 +280,10 @@ class CloudStorageApplicationTests {
 	@Test
 	public void canShowCustomErrorPage() throws InterruptedException {
 		signupAndLogin("asdf");
+		Thread.sleep(500);
 		getPage("/asdoppasdo");
 
+		Thread.sleep(500);
 		String pageContent = driver.findElement(By.cssSelector("body")).getText();
 		Assertions.assertTrue(pageContent.contains("something went wrong"));
 	}

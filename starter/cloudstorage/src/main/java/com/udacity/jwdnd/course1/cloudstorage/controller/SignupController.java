@@ -34,7 +34,7 @@ public class SignupController {
 
         if (userService.getUser(signupform.getUsername()) == null){
             int res = userService.addUserHashed(signupform);
-            return "redirect:/signup?signupSuccess=true";
+            return "redirect:/login?signupSuccess=true";
         }
         System.out.println("user already exist");
         return "redirect:/signup?userExist=true";

@@ -18,6 +18,9 @@
                 <div class="alert alert-dark" id="logged-out-alert" th:remove="${hideLoggedOutAlert} ? all">
                     You have been logged out
                 </div>
+                <div class="alert alert-dark" id="sign-up-success" th:if="${signupSuccess}">
+                    successfully signed up! Please log in.
+                </div>
                 <div class="form-group">
                     <label for="inputUsername">Username</label>
                     <input type="input" class="form-control" name="username" id="inputUsername" placeholder="Enter Username" maxlength="20" required>
