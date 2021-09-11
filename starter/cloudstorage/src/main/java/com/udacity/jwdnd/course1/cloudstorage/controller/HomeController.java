@@ -38,7 +38,7 @@ public class HomeController {
     public String homePage(Principal principal, Model model){
         int userId = getUserData(principal).getUserid();
         List<NoteA> notes = noteMapper.getNotes(userId);
-        List<Cred> creds = credMapper.creds(); // TODO: get with userId
+        List<Cred> creds = credMapper.creds(userId); // TODO: get with userId
         List<UploadFile> files = fileMapper.getFiles(userId);
         model.addAttribute("notes", notes);
         model.addAttribute("creds", creds);

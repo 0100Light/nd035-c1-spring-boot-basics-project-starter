@@ -288,6 +288,27 @@ class CloudStorageApplicationTests {
 		Assertions.assertTrue(pageContent.contains("something went wrong"));
 	}
 
+	// When a user logs in, they should see the data they have added to the application.
+	@Test
+	public void userCanOnlySeeHisCreds(){
+		signupAndLogin("aaa");
+		createCred("aaa ");
+		logout();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		signupAndLogin("bbb");
+		createCred("bbb");
+		String tableText = driver.findElement(By.cssSelector("#credentialTable > tbody")).getText();
+		Assertions.assertFalse(tableText.contains("aaa"));
+	}
+
+	private void logout(){
+		getPage("/logout");
+	}
+
 	public void devAuto() {
 		driver.get("http://localhost:8080/login");
 		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);
