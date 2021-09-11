@@ -86,7 +86,17 @@ class CloudStorageApplicationTests {
 	}
 	private void signupAndLogin(String username){
 		signUp(username);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		login(username);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// 2. Write Tests for Note Creation, Viewing, Editing, and Deletion.
@@ -265,6 +275,15 @@ class CloudStorageApplicationTests {
 		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
 		Assertions.assertTrue(formText.contains("User already exists"));
 		// User already exists
+	}
+
+	@Test
+	public void canShowCustomErrorPage() throws InterruptedException {
+		signupAndLogin("asdf");
+		getPage("/asdoppasdo");
+
+		String pageContent = driver.findElement(By.cssSelector("body")).getText();
+		Assertions.assertTrue(pageContent.contains("something went wrong"));
 	}
 
 	public void devAuto() {

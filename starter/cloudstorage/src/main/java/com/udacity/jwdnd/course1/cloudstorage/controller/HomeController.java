@@ -100,9 +100,10 @@ public class HomeController {
         Files.createDirectories(uploadDir);
         Path uploadPath = Paths.get(String.valueOf(uploadDir), fn);
         byte[] bytes = fileUpload.getBytes();
+
         Files.write(uploadPath, bytes);
 
-        // TODO: write file info to DB
+        // write file info to DB
         String fileExt = FilenameUtils.getExtension(fn);
         long fileSize = Files.size(uploadPath);
 

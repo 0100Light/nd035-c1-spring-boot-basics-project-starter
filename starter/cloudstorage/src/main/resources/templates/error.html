@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<h1>Sorry, something went wrong!</h1>
+<h3>We'll clean up and try again.</h3>
+
+<div th:if="${error}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<a th:href="@{/home}">Back to Home</a>
+</body>
+</html>
