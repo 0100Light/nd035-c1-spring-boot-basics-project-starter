@@ -13,7 +13,7 @@
             <p class="">Username: <span th:text="${login_user_name}"></span></p>
             <div id="logoutDiv">
                 <form action="#" method="POST">
-                    <button type="submit" class="btn btn-secondary float-right">Logout</button>
+                    <a th:href="@{/logout}" class="btn btn-secondary float-right">Logout</a>
                 </form>
             </div>
             <div id="contentDiv" style="clear: right;">

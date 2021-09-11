@@ -4,10 +4,8 @@ import com.udacity.jwdnd.course1.cloudstorage.model.LoginForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,14 +20,11 @@ public class LoginController {
     }
 
     @GetMapping()
-    public String login(){
-//        List<User> users = userService.Users();
-//        System.out.println("--------------------");
-//        System.out.println("USERS:");
-//        for (User u: users){
-//            System.out.println(u.getUsername() + " -- " + u.getPassword());
-//        }
-//        System.out.println("---------------------");
+    public String login(@RequestParam(value = "invalidUser", required = false, defaultValue = "false") boolean invalidUser,
+                        @RequestParam(value = "loggedOut", required = false, defaultValue = "false") boolean loggedOut,
+                        Model model){
+        model.addAttribute("hideInvalidUserAlert", !invalidUser);
+        model.addAttribute("hideLoggedOutAlert", !loggedOut);
         return "login";
     }
 

@@ -5,10 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/signup")
@@ -20,8 +17,13 @@ public class SignupController {
     }
 
     @GetMapping()
-    public String signup(@ModelAttribute("signupform") SignupForm signupForm, Model model){
+    public String signup(@ModelAttribute("signupform") SignupForm signupForm,
+                         Model model,
+                         @RequestParam(value = "signupSuccess", required = false, defaultValue = "false") boolean sigupSuccess,
+                         @RequestParam(value = "userExist", required = false, defaultValue = "false") boolean userExist){
         // @ModelAttribute will instantiate SignupForm automatically and insert into model
+        model.addAttribute("signupSuccess", sigupSuccess);
+        model.addAttribute("userExist", userExist);
         return "signup";
     }
 
@@ -32,10 +34,10 @@ public class SignupController {
 
         if (userService.getUser(signupform.getUsername()) == null){
             int res = userService.addUserHashed(signupform);
-            return "redirect:/login";
+            return "redirect:/signup?signupSuccess=true";
         }
         System.out.println("user already exist");
-        return "redirect:/signup";
+        return "redirect:/signup?userExist=true";
         //TODO: show msg if user already exists
     }
 }

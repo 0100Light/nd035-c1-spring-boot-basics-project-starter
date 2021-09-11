@@ -232,6 +232,41 @@ class CloudStorageApplicationTests {
 
 	}
 
+	@Test
+	public void canShowLogoutSuccess(){
+		signupAndLogin("asdfhk");
+		getPage("/logout");
+		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
+		Assertions.assertTrue(formText.contains("You have been logged out"));
+	}
+
+	@Test
+	public void canShowLoginFailed(){
+		login("ajdpsfoijapdfojiapiodf");
+		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
+		Assertions.assertTrue(formText.contains("Invalid username or password"));
+	}
+
+	@Test
+	public void canShowSignupSuccess() throws InterruptedException {
+		signUp("yyyy");
+
+		Thread.sleep(200);
+		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
+		Assertions.assertTrue(formText.contains("successfully signed up"));
+	}
+
+	@Test
+	public void canShowSignupError(){
+
+		signUp("yyyy");
+		signUp("yyyy");
+
+		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
+		Assertions.assertTrue(formText.contains("User already exists"));
+		// User already exists
+	}
+
 	public void devAuto() {
 		driver.get("http://localhost:8080/login");
 		driver.findElement(By.id("inputUsername")).sendKeys("a" + Keys.TAB);

@@ -6,14 +6,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthService authService;
+    private MyLogoutHandler myLogoutHandler;
+    private Object MyLogoutHandler;
 
-    public WebSecurityConfig(AuthService authService) {
+    public WebSecurityConfig(AuthService authService, MyLogoutHandler myLogoutHandler) {
         this.authService = authService;
+        this.myLogoutHandler = myLogoutHandler;
     }
 
     @Override
@@ -28,16 +33,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
 
         http.authorizeRequests()
-                .antMatchers("/signup", "/css/**", "/js/**", "/h2/**").permitAll()
+                .antMatchers("/signup", "/css/**", "/js/**", "/h2/**", "/login", "/loggedOut").permitAll()
                 .anyRequest().authenticated();
 
         http.formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/home", true)
+                .failureUrl("/login?invalidUser=true")
                 .permitAll();
 
         http.logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login");
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?loggedOut=true");
     }
 }
