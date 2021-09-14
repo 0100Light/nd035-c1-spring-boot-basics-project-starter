@@ -1,3 +1,11 @@
+# TODO
+- [x] You should inform the user with a success message after each operation (create/delete). At the moment, there's no message for the user that says something like "The File has been added to the list", etc.
+- [x] There's no button to download the file. Make sure to add it in the list item, perhaps close to the Delete button. Remember that the file should be downloaded locally when clicking the View (or Download) button.
+- [x] There's a problem with large files that makes the app crash. Please, follow the instructions above (in my comments) to tune the file size limit.
+- [ ] You should inform the user with a success message after each operation (create/edit/delete). At the moment, there's no message for the user that says something like "The Credential has been added to the list", etc.
+- [ ] Good job preventing users to create already used usernames. However, it's still possible to upload two files with the same name as you can see below.
+
+
 # To reviewer:
 - I've fixed the problems, the NoteTests file is created incidentally during the process and is deleted.
 Below is a screenshot of all tests passed.

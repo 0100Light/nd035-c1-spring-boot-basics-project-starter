@@ -6,17 +6,20 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -35,16 +38,33 @@ public class HomeController {
     }
 
     @GetMapping()
-    public String homePage(Principal principal, Model model){
+    public String homePage(@RequestParam(value = "msg", required = false) String msg,
+                           Principal principal, Model model){
         int userId = getUserData(principal).getUserid();
         List<NoteA> notes = noteMapper.getNotes(userId);
-        List<Cred> creds = credMapper.creds(userId); // TODO: get with userId
+        List<Cred> creds = credMapper.creds(userId); // get with userId
         List<UploadFile> files = fileMapper.getFiles(userId);
         model.addAttribute("notes", notes);
         model.addAttribute("creds", creds);
         model.addAttribute("files", files);
 
         model.addAttribute("login_user_name", principal.getName());
+        // TODO: display message respectively
+
+        var messageMap = new HashMap<String, String>();
+        messageMap.put("aCred", "credential added");
+        messageMap.put("uCred", "credential updated");
+        messageMap.put("dCred", "credential deleted");
+        messageMap.put("aNote", "note added");
+        messageMap.put("uNote", "note updated");
+        messageMap.put("dNote", "note deleted");
+        messageMap.put("aFile", "file added");
+        messageMap.put("uFile", "file updated");
+        messageMap.put("dFile", "file deleted");
+        messageMap.put("noFile", "no file to upload");
+        messageMap.put("downloadFail", "error downloading file");
+
+        if (msg != null) model.addAttribute("msg", messageMap.get(msg));
         return "home";
     }
 
@@ -57,14 +77,14 @@ public class HomeController {
 
 
         int noteSize = noteMapper.countNotes();
-        return "redirect:/home#nav-notes";
+        return "redirect:/home?msg=aNote";
     }
 
     @GetMapping("/delete_note")
     public String delNote(@RequestParam String noteId){
         int noteid = Integer.parseInt(noteId);
         noteMapper.deleteNote(noteid);
-        return "redirect:/home#nav-notes";
+        return "redirect:/home?msg=dNote";
     }
 
     @GetMapping("/edit_note")
@@ -84,7 +104,7 @@ public class HomeController {
             Model model)
     {
         noteMapper.updateNote(new NoteA(Integer.parseInt(noteId), title, desc, Integer.parseInt(userId)));
-        return "redirect:/home/edit_note?noteId=" + noteId;
+        return "redirect:/home?msg=uNote";
     }
 
     // File
@@ -93,7 +113,7 @@ public class HomeController {
         if(fileUpload.isEmpty()) {
             model.addAttribute("success",false);
             model.addAttribute("message","No file selected to upload!");
-            return "redirect:/home";
+            return "redirect:/home?msg=noFile";
         }
         String fn = fileUpload.getOriginalFilename();
         Path uploadDir = Paths.get("./src/main/resources/upload");
@@ -112,11 +132,11 @@ public class HomeController {
 
         model.addAttribute("success",true);
         model.addAttribute("message","New File added successfully!");
-        return "redirect:/home";
+        return "redirect:/home?msg=aFile";
     }
 
     @GetMapping("/file/delete")
-    public String delFile(@RequestParam int fileId){
+    public String delFile(@RequestParam("fileId") int fileId){
         // TODO: delete file on hard disk
         UploadFile file = fileMapper.getFile(fileId);
         Path filepath = Paths.get(file.getFilelocation());
@@ -126,7 +146,24 @@ public class HomeController {
             e.printStackTrace();
         }
         fileMapper.delFile(fileId);
-        return "redirect:/home";
+        return "redirect:/home?msg=dFile";
+    }
+
+    @GetMapping(value = "/file/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public void downloadFile(@PathVariable("filename") String filename,
+                             HttpServletResponse response) throws IOException {
+        try {
+            String filePath = "./src/main/resources/upload/" + filename;
+            InputStream is = new FileInputStream(new File(filePath));
+            IOUtils.copy(is, response.getOutputStream());
+            String fileExt = FilenameUtils.getExtension(filePath);
+            response.setHeader("Content-Disposition", "attachment;filename=download." + fileExt);
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+            response.sendRedirect("/home?msg=downloadFail");
+        }
+
     }
 
     public User getUserData(Principal principal){

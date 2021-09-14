@@ -114,6 +114,11 @@ class CloudStorageApplicationTests {
 
 		Assertions.assertTrue(driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > th")).getText().contains("ttttt"));
 		Assertions.assertEquals("ddddd", driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > td:last-child")).getText());
+		var msgDiv = driver.findElement(By.id("message-div"));
+		Assertions.assertTrue(msgDiv.isDisplayed());
+		if (msgDiv.isDisplayed()){
+			Assertions.assertTrue(msgDiv.getText().contains("note added"));
+		}
 	}
 
 	public void createNote(String title, String description){
@@ -142,12 +147,42 @@ class CloudStorageApplicationTests {
 		driver.findElement(By.id("btn-edit-note-submit")).click();
 
 		Thread.sleep(200);
+//		checkMsgDiv("note update");
+
 		// get updated note text
-		String newTitle = driver.findElement(By.id("edit-note-title")).getText();
-		Assertions.assertEquals("nnnnnx", newTitle);
-		String newDescription = driver.findElement(By.id("edit-note-description")).getText();
-		Assertions.assertEquals("xddddd", newDescription);
+		navToNotes();
+		Thread.sleep(300);
+		String tableText = driver.findElement(By.cssSelector("#userTable > tbody")).getText();
+//		String newTitle = driver.findElement(By.id("edit-note-title")).getText();
+		Assertions.assertTrue(tableText.contains("nnnnnx"));
+		Assertions.assertTrue(tableText.contains("xddddd"));
+//		String newDescription = driver.findElement(By.id("edit-note-description")).getText();
 	}
+
+	@Test
+	public void canShowUpdateNoteMessage() throws InterruptedException {
+		signupAndLogin("asdkfjh");
+		createNote("nnnnn", "ddddd");
+
+
+//		driver.findElement(By.id("nav-notes-tab")).click();
+		Thread.sleep(200);
+		// edit button
+		driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > td:first-child > a.btn.btn-success")).click();
+
+		Thread.sleep(200);
+		driver.findElement(By.id("edit-note-title")).sendKeys("x" + Keys.TAB + "x");
+		driver.findElement(By.id("btn-edit-note-submit")).click();
+
+		Thread.sleep(200);
+		checkMsgDiv("note update");
+	}
+
+	private void navToNotes(){
+		getPage("/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+	}
+
 	// Write a test that deletes a note and verifies that the note is no longer displayed.
 	@Test
 	public void canDeteleNote(){
@@ -160,6 +195,16 @@ class CloudStorageApplicationTests {
 		driver.findElement(By.id("nav-notes-tab")).click();
 
 		Assertions.assertFalse(driver.findElement(By.cssSelector("#userTable > tbody > tr:last-child > th")).getText().contains("tt"));
+		checkMsgDiv("note delete");
+	}
+
+	private void checkMsgDiv(String msgToCheck){
+
+		var msgDiv = driver.findElement(By.id("message-div"));
+		Assertions.assertTrue(msgDiv.isDisplayed());
+		if (msgDiv.isDisplayed()){
+			msgDiv.getText().contains(msgToCheck);
+		}
 	}
 
 	// 3. Write Tests for Credential Creation, Viewing, Editing, and Deletion.
@@ -326,6 +371,14 @@ class CloudStorageApplicationTests {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Test
+	public void canShowNoFileError(){
+		signupAndLogin("asdfjiop");
+		getPage("/home");
+		driver.findElement(By.cssSelector("#nav-files > form > div > div > div.col-sm-4 > button")).click();
+		checkMsgDiv("no file");
 	}
 
 }
