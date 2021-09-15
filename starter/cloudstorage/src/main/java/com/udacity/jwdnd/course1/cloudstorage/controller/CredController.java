@@ -33,7 +33,7 @@ public class CredController {
         String enc_pass = encryptionService.encryptValue(password, enc_key);
         int userId = userService.getUser(principal.getName()).getUserid();
         credMapper.addCred(new Cred(url, username, enc_key, enc_pass, userId));
-        return "redirect:/home#nav-credentials";
+        return "redirect:/home?msg=aCred";
     }
 
     @GetMapping("/cred/edit")
@@ -67,8 +67,8 @@ public class CredController {
         credMapper.updateCred(newCred);
 
         String rdUrl = "redirect:/home/cred/edit?credId=" + newCred.getCredentialid();
-//        return "redirect:/home#nav-credentials";
-        return rdUrl;
+        return "redirect:/home?msg=uCred";
+//        return rdUrl;
     }
 
     @GetMapping("/cred/delete")

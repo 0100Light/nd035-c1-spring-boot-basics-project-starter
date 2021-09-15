@@ -63,6 +63,7 @@ public class HomeController {
         messageMap.put("dFile", "file deleted");
         messageMap.put("noFile", "no file to upload");
         messageMap.put("downloadFail", "error downloading file");
+        messageMap.put("uploadFail", "error uploading file");
 
         if (msg != null) model.addAttribute("msg", messageMap.get(msg));
         return "home";
@@ -119,8 +120,15 @@ public class HomeController {
         Path uploadDir = Paths.get("./src/main/resources/upload");
         Files.createDirectories(uploadDir);
         Path uploadPath = Paths.get(String.valueOf(uploadDir), fn);
-        byte[] bytes = fileUpload.getBytes();
 
+        // check if exist
+        File f = new File(String.valueOf(uploadPath));
+        if (f.exists() && !f.isDirectory()){
+            return "redirect:/home?msg=uploadFail";
+        }
+
+        // write file to disk
+        byte[] bytes = fileUpload.getBytes();
         Files.write(uploadPath, bytes);
 
         // write file info to DB
@@ -137,7 +145,7 @@ public class HomeController {
 
     @GetMapping("/file/delete")
     public String delFile(@RequestParam("fileId") int fileId){
-        // TODO: delete file on hard disk
+        // delete file on hard disk
         UploadFile file = fileMapper.getFile(fileId);
         Path filepath = Paths.get(file.getFilelocation());
         try {

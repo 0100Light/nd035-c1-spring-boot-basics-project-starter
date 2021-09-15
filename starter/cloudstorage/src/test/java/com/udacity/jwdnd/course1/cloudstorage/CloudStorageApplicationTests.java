@@ -228,6 +228,7 @@ class CloudStorageApplicationTests {
 		Thread.sleep(200);
 		String getTitle = driver.findElement(By.cssSelector("#credentialTable > tbody > tr:last-child> th")).getText();
 		Assertions.assertEquals("uu", getTitle);
+		checkMsgDiv("credential added");
 	}
 
 	private void createCred(String url){
@@ -258,10 +259,13 @@ class CloudStorageApplicationTests {
 
 		// check can update
 		driver.findElement(By.id("edit-cred-password")).clear();
-		driver.findElement(By.id("edit-cred-password")).sendKeys("newpass");
-		String newPass = driver.findElement(By.id("edit-cred-password")).getAttribute("value");
-		Assertions.assertEquals("newpass", newPass);
+		driver.findElement(By.id("edit-cred-password")).sendKeys("2");
+		driver.findElement(By.cssSelector("body > form > input[type=submit]:last-child")).click();
+		checkMsgDiv("updated");
+
 	}
+
+
 	// Write a test that deletes an existing set of credentials and verifies that the credentials are no longer displayed.
 	@Test
 	public void canDeleteCred() throws InterruptedException {
