@@ -18,7 +18,7 @@ public class MyErrorController implements ErrorController {
     public String handleError(@RequestParam(value = "errorType", required = false) String errorType, Model model){
         if (errorType != null && errorType.equals("fileSizeTooLarge")){
             model.addAttribute("error", true);
-            model.addAttribute("errorMessage", "File size is too large. Limit is 5 MB at most.");
+            model.addAttribute("errorMessage", "File size is too large. Limit is 500 KB at most.");
         }
         return "error";
     }

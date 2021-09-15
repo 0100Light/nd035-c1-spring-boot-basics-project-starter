@@ -5,12 +5,12 @@
     <title>Error</title>
 </head>
 <body>
-<h1>Sorry, something went wrong!</h1>
+<div th:if="${error}">
+    <h1 style="color:darkred" th:text="${errorMessage}"></h1>
+</div>
+<h3>Sorry, something went wrong!</h3>
 <h3>We'll clean up and try again.</h3>
 
-<div th:if="${error}">
-    <p th:text="${errorMessage}"></p>
-</div>
 
 <a th:href="@{/home}">Back to Home</a>
 </body>
