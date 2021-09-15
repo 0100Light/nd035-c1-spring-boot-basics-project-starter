@@ -310,8 +310,9 @@ class CloudStorageApplicationTests {
 	public void canShowSignupSuccess() throws InterruptedException {
 		signUp("yyyy");
 
-		Thread.sleep(500);
+		Thread.sleep(200);
 		String formText = driver.findElement(By.cssSelector("body > div > form")).getText();
+		Thread.sleep(200);
 		Assertions.assertTrue(formText.contains("successfully signed up"));
 	}
 
